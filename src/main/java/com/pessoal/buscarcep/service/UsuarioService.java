@@ -24,10 +24,15 @@ public class UsuarioService {
 		
 		if (usuarioRepository.findByNome(usuario.getNome()).isPresent())
 			return Optional.empty();
-		URL url = new URL("https://viacep.com.br/ws/"+usuario.getCep()+"/json/");
-		URLConnection connection = url.openConnection();
-		InputStream is = connection.getInputStream();
-		BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+		
+		/* - Consumindo API pública externa Via Cep*/
+		URL url = new URL("https://viacep.com.br/ws/"+usuario.getCep()+"/json/");  //Criando um novo objeto do tipo URL que recebe o endereço que vai ser consumido
+		
+		URLConnection connection = url.openConnection(); //Abrindo conexão como objeto url
+		
+		InputStream is = connection.getInputStream(); //Obtendo os dados da requisição
+		
+		BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8")); 
 		
 		String cep = "";
 		StringBuilder jsonCep = new StringBuilder();
@@ -44,6 +49,8 @@ public class UsuarioService {
 		usuario.setBairro(userAux.getBairro());
 		usuario.setLocalidade(userAux.getLocalidade());
 		usuario.setUf(userAux.getUf());
+		
+		/* - Consumindo API pública externa Via Cep */
 		
 		return Optional.of(usuarioRepository.save(usuario));
 	}
